@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+	<style>
+	@import url("../css/index.css");
+	.loginTitle{text-align: center;}
+	html,body{width:100%;height: 100%;background: #516e96;overflow:hidden;/*display: flex;align-items: center;margin: auto;*/}
+	.login{width:450px;}
+	 #app{justify-content: center;display: flex;margin-top:200px;}
+	 @media(max-width: 450px) {
+		.login{
+			width: initial;
+		}
+	}
+	</style>
+</head>
+<body>
+<script>
+      if (!window.Promise) {
+        document.write('<script src="//cdn.jsdelivr.net/npm/es6-promise@4.1.1/dist/es6-promise.min.js"><\/script><script>ES6Promise.polyfill()<\/script>')
+      }
+    </script>
+	<div id="app">
+
+		<el-card>
+			<h2 class="loginTitle">个人专项扣除申请</h2>
+	 <el-form ref="form" :model="form" class="login" :rules="rules">
+	 	 <el-form-item prop="idCard">
+	       <el-input v-model="form.idCard"  placeholder="身份证" autocomplete="off"></el-input>
+        </el-form-item>
+         <el-form-item prop="password">
+	        <el-input v-model="form.password"  placeholder="密码" type="password"></el-input> 
+	       <span @click="password">忘记密码</span>
+	     </el-form-item>
+	  <el-form-item text-center>
+	    <el-button type="primary" @click="onSubmit('form')">登陆</el-button>
+	  </el-form-item>
+    </el-form>
+
+     </el-card>
+    </div>
+
+<!--      <script src="http://cdn.jsdelivr.net/npm/es6-promise@4.1.1/dist/es6-promise.min.js"></script>
+     <script src="http://element-cn.eleme.io/element-ui.e600741.js"></script>
+     <script src="http://element-cn.eleme.io/manifest.e600741.js"></script>
+     <script src="https://cdn.bootcss.com/babel-polyfill/6.23.0/polyfill.min.js"></script> -->
+    <script src="../js/vue.js"></script>
+	<script src="../js/index.js"></script>
+	<script>
+		var Main = {
+		  data() {
+			 var checkID = (rule, value, callback) => {
+		        if (!value) {
+		          return callback(new Error('身份证不能为空'));
+		        }
+		        setTimeout(() => {
+		           isCardNo(value);
+		           function isCardNo(card) 
+					{ 
+						var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/; 
+						if(reg.test(card) === false) 
+						{ 
+						callback(new Error('请输入正确的身份证'));
+						return false; 
+						} 
+					}
+		        }, 1000);
+		      };
+		      var validatePass = (rule, value, callback) => {
+		        if (value === '') {
+		          callback(new Error('请输入密码'));
+		        } else {
+		          callback();
+		        }
+		      };
+		    return {
+		       form: {
+		          idCard: '',
+		          password: ''
+		        },
+		        rules:{
+		        	  password: [
+			            { validator: validatePass, trigger: 'blur' }
+			          ],
+			          idCard: [
+			            { validator: checkID, trigger: 'blur' }
+			          ]
+		        }
+		    }
+		  },
+	    methods: {
+	      onSubmit(formName) {
+		        this.$refs[formName].validate((valid) => {
+		          if (valid) {
+		            alert('submit!');
+		          } else {
+		            //console.log('error submit!');
+		            return false;
+		          }
+		        });
+	      },
+	      password(){
+		      this.$alert('管理编制忘记密码请联系Myit重置，其他请持身份证原件找车间人事重置，谢谢！', '找回密码', {
+		          confirmButtonText: '确定',
+		          callback: action => {
+		        
+		          }
+		        });	      	
+	      }
+
+	      }
+		}
+		var Ctor = Vue.extend(Main)
+		new Ctor().$mount('#app')
+	</script>
+</body>
+</html>
+

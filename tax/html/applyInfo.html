@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="../css/applyInfo.css">
+</head>
+<body>
+
+	<div id="app" v-cloak>
+	  <el-button type="primary" siza="mini" class="close" @click="close()">取消</el-button>
+	  <el-form ref="applyForm" :model="applyForm" label-width="120px" :rules="rules" class="applyForm">
+      
+      <!-- 申请人信息 -->
+		<el-card class="box-card apply">
+		  <div slot="header" class="clearfix">
+		    <b>申请人信息</b>
+		  </div>
+		  <el-form-item label="工号:">
+			<span>{{applyForm.num}}</span>
+		 </el-form-item>
+		 <el-form-item label="身份证号:">
+			<span>{{applyForm.idCard}}</span>
+		 </el-form-item>
+		 <el-form-item label="姓名:">
+			<span>{{applyForm.name}}</span>
+		 </el-form-item>
+		  <el-form-item label="地区:">
+			<span>{{applyForm.area}}</span>
+		 </el-form-item>
+		  <el-form-item label="申请日期:">
+			<span>{{applyForm.date}}</span>
+		 </el-form-item>
+		 <el-form-item prop="mobile" label="手机号码:">
+			<el-input v-model="applyForm.mobile" placeholder="请输入手机号码" autocomplete="off" ></el-input>
+		 </el-form-item>
+		</el-card>
+      </el-form>
+
+      <!-- 专项附加扣除项目信息 --> 
+      <el-form ref="teamForm" :model="teamForm" label-width="120px" label-position="left" class="teamForm">
+		<el-card class="box-card detail">
+		  <div slot="header" class="clearfix">		    
+		    <b>专项附加扣除项目信息</b><br>
+		    <span class="tip">以下所有项目选是表示享受，选否表示不享受</span>
+		  </div>
+		  <div  class="text item">
+		    <div class="ruleTitle">
+		    <span>一、子女教育</span> 
+		    <el-button type="primary" size="mini" @click="dialogFormVisible1 = true"  class="rule">查看规则</el-button>
+		    <el-dialog title="子女教育专项附加扣除" :visible.sync="dialogFormVisible1">
+	            <p>	
+					纳税人的子女接受学前教育和学历教育的相关支出，按照每个子女每年12000元（每月1000元）的标准定额扣除。
+					前款所称学前教育包括年满3岁至小学入学前教育。学历教育包括义务教育（小学和初中教育）、高中阶段教育（普通高中、中等职业教育)、高等教育（大学专科、大学本科、硕士研究生、博士研究生教育）。
+					受教育子女的父母分别按扣除标准的50%扣除；经父母约定，也可以选择由其中一方按扣除标准的100%扣除。具体扣除方式在一个纳税年度内不得变更。
+	            </p>
+		    	<div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+                  <el-button type="primary" @click="dialogFormVisible1 = false">确 定</el-button>
+                </div>
+	       </el-dialog>
+		   </div>	
+		    <div class="choose">
+			    <el-radio-group v-model="teamForm.child.radio" @change="joinChild(teamForm.child.radio)">
+			      <el-radio label="是" v-model="teamForm.child.radio" ref="childNum"></el-radio>
+			      <el-radio label="否" v-model="teamForm.child.radio"></el-radio>
+			    </el-radio-group>
+	        </div>
+	        <el-form-item label="在教育子女个数">
+				<el-input-number v-model="teamForm.child.num" @change="monthTip" :disabled="teamForm.child.numDisabled"   size="mini" :min="1" :max="9" label="描述文字"></el-input-number>
+            </el-form-item>
+	        <el-form-item label="比例选择/月">
+	        </el-form-item>
+	        <el-radio-group v-model="teamForm.child.selection"  @change="monthTip" :disabled="teamForm.child.selDisabled" class="radio">
+			      <div><el-radio label="50%" ></el-radio><span class="labelText" >由父母分别扣除</span></div>
+			      <div><el-radio label="100%"></el-radio><span class="labelText">由父母其中一方扣除</span></div>
+			    </el-radio-group>
+	        <el-form-item label="扣除金额元/月"  class="lineHeight top">
+			   <span>{{teamForm.child.month}}</span>
+	        </el-form-item>
+          </div>
+          <div  class="text item">
+          	<div class="ruleTitle">
+			    <span>二、继续教育</span> 
+			    <el-button type="primary" size="mini" @click="dialogFormVisible2 = true"  class="rule">查看规则</el-button>
+			    		    <el-dialog title="继续教育专项附加扣除" :visible.sync="dialogFormVisible2">
+	            <p>	
+					纳税人接受学历继续教育的支出，在学历教育期间按照每年4800元（每月400元）定额扣除。纳税人接受技能人员职业资格继续教育、专业技术人员职业资格继续教育支出，在取得相关证书的年度，按照每年3600元定额扣除。
+					个人接受同一学历教育事项，符合本办法规定扣除条件的，该项教育支出可以由其父母按照子女教育支出扣除，也可以由本人按照继续教育支出扣除，但不得同时扣除。
+
+
+	            </p>
+				 <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible2 = false">确 定</el-button>
+                 </div>
+	       </el-dialog>
+		    </div>
+		    <div class="choose">
+			    <el-radio-group v-model="teamForm.continue.educationRadio"  @change="joinContinue()">
+			      <el-radio label="是"></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </div>
+			 <el-form-item label="学历教育扣除金额元/月" class="lineHeight">
+			 	 
+			    <span class="money">400</span>
+
+			      
+	        </el-form-item>
+		    <div class="choose">
+			    <el-radio-group v-model="teamForm.continue.professionRadio" @change="joinContinue()">
+			      <el-radio label="是"></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </div>
+	        <div class="skill">
+	        	<div class="skillLeft">
+		        	<span>职业技能扣除金额元/年</span><br>
+		        	<span>仅获得证书当年享有</span>
+	        	</div>
+	        	<div class="skillRight">
+	        		<span>3600</span>
+	        	</div>
+	        </div>
+          </div>
+          <div  class="text item">
+          	<div class="ruleTitle">
+			    <span>三、住房贷款利息</span> 
+			    <el-button type="primary" size="mini" @click="dialogFormVisible3 = true"  class="rule">查看规则</el-button>
+			     <el-dialog title="住房贷款利息专项附加扣除" :visible.sync="dialogFormVisible3">
+	            <p>	
+					纳税人本人或配偶使用商业银行或住房公积金个人住房贷款为本人或其配偶购买住房，发生的首套住房贷款利息支出，在偿还贷款期间，可以按照每年12000元（每月1000元）标准定额扣除。非首套住房贷款利息支出，纳税人不得扣除。纳税人只能享受一套首套住房贷款利息扣除。
+					经夫妻双方约定，可以选择由其中一方扣除，具体扣除方式在一个纳税年度内不得变更。
+					纳税人应当留存住房贷款合同、贷款还款支出凭证。
+	            </p>
+				 <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible3 = false">确 定</el-button>
+                 </div>
+	       </el-dialog>
+		    </div>
+		    <div class="choose">
+			    <el-radio-group v-model="teamForm.house.radio"  @change="joinHouse()">
+			      <el-radio label="是" ></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </div>
+			 <el-form-item label="申请金额元/月">
+			    <span class="money">1000</span>
+	        </el-form-item>
+          </div>
+         <div  class="text item">
+           <div class="ruleTitle">
+		    <span>四、租房(主要工作城市)</span> 
+		   <el-button type="primary" size="mini" @click="dialogFormVisible4 = true"  class="rule">查看规则</el-button>
+		   			     <el-dialog title="住房租金专项附加扣除" :visible.sync="dialogFormVisible4">
+	            <p>	
+					纳税人本人及配偶在纳税人的主要工作城市没有住房，而在主要工作城市租赁住房发生的租金支出,可以按照以下标准定额扣除：
+					（一）承租的住房位于直辖市、省会城市、计划单列市以及国务院确定的其他城市，扣除标准为每年14400元（每月1200元）；
+					（二）承租的住房位于其他城市的，市辖区户籍人口超过100万的，扣除标准为每年12000元（每月1000元）；
+					（三）承租的住房位于其他城市的，市辖区户籍人口不超过100万（含）的，扣除标准为每年9600元（每月800元）。
+					主要工作城市是指纳税人任职受雇所在城市，无任职受雇单位的，为其经常居住城市。城市范围包括直辖市、计划单列市、副省级城市、地级市（地区、州、盟）全部行政区域范围。
+					夫妻双方主要工作城市相同的，只能由一方扣除住房租金支出。夫妻双方主要工作城市不相同的，且各自在其主要工作城市都没有住房的，可以分别扣除住房租金支出。
+					住房租金支出由签订租赁住房合同的承租人扣除。
+					纳税人及其配偶不得同时分别享受住房贷款利息专项附加扣除和住房租金专项附加扣除。
+					纳税人应当留存住房租赁合同。
+	            </p>
+				 <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible4 = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible4 = false">确 定</el-button>
+                 </div>
+	       </el-dialog>
+		  </div>	
+
+		  	<div class="choose">
+			    <el-radio-group v-model="teamForm.rent.radio"  @change="joinRent(teamForm.rent.radio);">
+			      <el-radio label="是"></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </div>
+	       <div class="rent">
+	       	   <span class="left">申请金额元/月</span>
+	       	   <span class="right">
+		       	   	<el-radio-group v-model="teamForm.rent.radioPrice"  :disabled="teamForm.rent.rentDisabled">
+				      <el-radio label="1200"></el-radio>
+				      <el-radio label="1000"></el-radio>
+				      <el-radio label="800"></el-radio>
+				    </el-radio-group>
+			   </span>
+	       </div>
+	        	
+          </div>
+         <div  class="text item">
+         	<div class="ruleTitle">
+			    <span>五、赡养老人</span> 
+			    <el-button type="primary" size="mini"  @click="dialogFormVisible5 = true"  class="rule">查看规则</el-button>
+			       <el-dialog title="赡养老人专项附加扣除" :visible.sync="dialogFormVisible5">
+	            <p>	
+					纳税人赡养60岁（含）以上父母以及其他法定赡养人的赡养支出，可以按照以下标准定额扣除：
+					（一）纳税人为独生子女的，按照每年24000元（每月2000元）的标准定额扣除；
+					（二）纳税人为非独生子女的，应当与其兄弟姐妹分摊每年24000元(每月2000元)的扣除额度，分摊方式包括平均分摊、被赡养人指定分摊或者赡养人约定分摊，具体分摊方式在一个纳税年度内不得变更。采取指定分摊或约定分摊方式的，每一纳税人分摊的扣除额最高不得超过每年12000元（每月1000元），并签订书面分摊协议。指定分摊与约定分摊不一致的，以指定分摊为准。纳税人赡养2个及以上老人的，不按老人人数加倍扣除。
+					其他法定赡养人是指祖父母、外祖父母的子女已经去世，实际承担对祖父母、外祖父母赡养义务的孙子女、外孙子女。
+					本办法所称父母，是指生父母、继父母、养父母。本办法所称子女，是指婚生子女、非婚生子女、继子女、养子女。父母之外的其他人担任未成年人的监护人的，比照本办法规定执行。
+	            </p>
+				 <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible5 = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible5 = false">确 定</el-button>
+                 </div>
+	       </el-dialog>
+		    </div>	
+		    <div class="choose">
+			    <el-radio-group v-model="teamForm.old.radio" @change="joinOld(teamForm.old.radio)">
+			      <el-radio label="是"></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </div>
+			 <el-form-item label="是否有1个直系老人满60周岁/月"  class="lineHeight">
+			 	<el-radio-group v-model="teamForm.old.isHave" :disabled="teamForm.old.isHaveDisabled"  @change="checkInput()">
+			      <el-radio label="是"></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </el-form-item>
+	        <el-form-item label="是否独生子女">
+			 	<el-radio-group v-model="teamForm.old.onlychildRadio"  :disabled="teamForm.old.onlyDisabled">
+			      <el-radio label="是"></el-radio>
+			      <el-radio label="否"></el-radio>
+			    </el-radio-group>
+	        </el-form-item>
+	        <el-form-item label="申请金额元/月" >
+			 	<input type="text" v-model="teamForm.old.price" @change="checkInput()"  :disabled="teamForm.old.priceDisabled">
+			 	<!-- <el-input v-model="teamForm.old.price"   type="text"></el-input> -->
+	        </el-form-item>
+          </div>
+          <div  class="text item">
+          	<div class="ruleTitle">
+			    <span>六、大病医疗</span> 
+			    <el-button type="primary" size="mini"  @click="dialogFormVisible6 = true"  class="rule">查看规则</el-button>
+			    			       <el-dialog title="大病医疗专项附加扣除" :visible.sync="dialogFormVisible6">
+	            <p>	
+					一个纳税年度内，在社会医疗保险管理信息系统记录的（包括医保目录范围内的自付部分和医保目录范围外的自费部分）由个人负担超过15000元的医药费用支出部分，为大病医疗支出，可以按照每年60000元标准限额据实扣除。大病医疗专项附加扣除由纳税人办理汇算清缴时扣除。
+					纳税人发生的大病医疗支出由纳税人本人扣除。
+					纳税人应当留存医疗服务收费相关票据原件（或复印件）。
+	            </p>
+				 <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible6 = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible6 = false">确 定</el-button>
+                 </div>
+	       </el-dialog>
+		    </div>	
+			<p class="bottom">大病医疗专项附加扣除由纳税人在当地税务部门办理汇算清缴时(次年3月1日至6月30日)扣除</p>
+          </div>
+		</el-card>
+	     <el-card>
+	     	 <span class="tip">如您已经不再享受专项扣除项目，请及时提交申请取消（在申请单上选否表示取消）相关项目扣除</span>
+			  <el-form-item text-center>
+			    <el-button type="primary" @click="onSubmit">提交</el-button>
+			  </el-form-item>
+		  </el-card>
+	  </el-form>
+	  
+
+	  <!-- 提示窗 -->
+	  <el-dialog title="规则提示" :visible.sync="ruleTip" width="80%">
+		<span>住房贷款利息和租房只能选择其中一种”</span>
+		<span slot="footer" class="dialog-footer">
+			<el-button @click="ruleTip = false">取 消</el-button>
+			<el-button type="primary" @click="ruleTip = false">确 定</el-button>
+		</span>
+	 </el-dialog>
+
+	 <!-- 提交确认窗口 -->
+	 <el-dialog title="提示" :visible.sync="submitTip" width="80%">
+			<el-form ref="submitForm" :model="submitForm" label-width="120px" :rules="rules" class="submitForm">
+					<div slot="header" class="clearfix">
+						<b>各专项附件扣除金额汇总清单</b>
+					</div>
+					<el-form-item label="子女教育:">
+						<span>{{submitForm.chird_edu_money}}</span> <span>(月度)</span>
+					</el-form-item>
+					<el-form-item label="学历教育:">
+						<span>{{submitForm.edu_money}}</span> <span>(月度)</span>
+					</el-form-item>
+					<el-form-item label="职业技能教育:">
+						<span>{{submitForm.skill_money}}</span> <span>(月度)</span>
+					</el-form-item>
+					<el-form-item label="住房贷款利息:">
+						<span>{{submitForm.home_loan_money}}</span> <span>(月度)</span>
+					</el-form-item>
+					<el-form-item label="租房:">
+						<span>{{submitForm.rent_house_money}}</span> <span>(月度)</span>
+					</el-form-item>
+					<el-form-item label="赡养老人:">
+						<span>{{submitForm.support_money}}</span> <span>(月度)</span>
+					</el-form-item>
+					<div class="content">
+						本人保证提交的信息的真实性，如提交虚假信息，由此产生的法律责任由员工本人承担。公司对员工提供的虚假信息不承担任何法律责任。
+						<br>
+						<p>请按照规则要求自行保留相关资料备查。</p>
+					</div>
+		   </el-form>
+		<span slot="footer" class="dialog-footer">
+			<el-button @click="submitTip = false">否</el-button>
+			<el-button type="primary"  @click="onConfirm">是</el-button>
+		</span>
+	 </el-dialog>
+
+    </div>
+    <script src="../js/browser.min.js"></script>
+   <script src="../js/vue.js"></script>
+	<script src="../js/index.js"></script>
+	<script  src="../js/vue-resource.min.js"></script>
+	<script>
+		var Main = {
+		  data() {
+			var checkmobile = (rule, value, callback) => {
+				console.log(0);
+				if (!value) {
+		          return callback(new Error('手机号码不能为空'));
+		        }
+		        setTimeout(() => {
+					checkPhone(value);
+					function checkPhone(val){ 
+						if(!(/^1[34578]\d{9}$/.test(val))){ 
+							callback(new Error("手机号码有误，请重填")); 
+							return false; 
+						} 
+					}
+		        }, 1000);
+			};
+		    return {
+		        applyForm: {
+					num: '123',
+					idCard:'362330199',
+					name: '张三',
+					area: "深圳",
+				    date: "2018-01-01",
+		          mobile: ""
+		        },
+				rules:{
+		        	  mobile: [
+			            { required: true, validator: checkmobile, trigger: 'blur' }
+			          ]
+		        },
+		        teamForm: {
+                  child:{
+                  	'radio': "",
+                  	'num': '',
+					'numDisabled': false,
+                  	'selection': "",
+					'selDisabled': false,
+                  	'month': null
+                  },
+                  continue:{
+                  	'educationRadio': "",
+                  	'professionRadio':"否"
+                  },
+                  house:{
+                  	'radio': ""
+                  },
+                  rent:{
+					  'radio': "",
+					  "rentDisabled": true,
+					  'radioPrice': "",
+					  
+                  },
+                  old:{
+                  	  'onlychildRadio': "",
+					  'price': null,
+					  'isHave': null,
+					  'isHaveDisabled': true,
+					  'onlyDisabled': true,
+					  "priceDisabled": true
+                  },
+                  illness:{
+                  	'radio':  ""
+                  }
+
+		        },
+		        submitForm:{
+		        	// 新增
+		        	user_name: "",
+		        	mobile: "",
+		        	is_chird_edu: null,
+		        	chird_edu_rate: "",
+		        	chird_edu_num: 0,
+		        	chird_edu_money: 0,
+		        	is_education_edu: null,
+		        	is_skill_edu: null,
+		        	edu_money: "",
+		        	skill_money: "",
+		        	is_home_loan: null,
+		        	home_loan_money: "",
+		        	is_rent_house:null,
+					rent_house_money:"",
+					is_support:null,
+					is_singleton:null,
+					support_money:0,
+					create_date:'',
+		        },
+				ruleTip: false,
+				submitTip: false,
+		        dialogFormVisible1: false,
+		        dialogFormVisible2: false,
+		        dialogFormVisible3: false,
+		        dialogFormVisible4: false,
+		        dialogFormVisible5: false,
+		        dialogFormVisible6: false
+
+		    }
+		  },
+		    methods: {
+		      close() {//关闭退出
+                 window.location.href="/logout";
+		      },
+		      onSubmit() {
+		      	this.submitForm.user_name=this.applyForm.name;
+			 	this.submitForm.support_money=this.teamForm.old.price;
+			 	this.submitForm.mobile=this.applyForm.mobile;
+			 	this.submitForm.is_chird_edu=this.teamForm.child.selection=="是"? 1:0;
+				this.submitForm.chird_edu_rate=this.teamForm.child.selection;
+				this.submitForm.chird_edu_num=this.teamForm.child.num;
+				this.submitForm.rent_house_money = this.teamForm.rent.radio=="是" ? this.teamForm.rent.radioPrice : 0;
+				this.submitForm.home_loan_money = this.teamForm.house.radio=="是" ? 1000 : 0;
+				this.submitForm.is_education_edu=this.teamForm.continue.educationRadio=="是"? 1:0;
+				this.submitForm.is_skill_edu=this.teamForm.continue.professionRadio=="是"? 1:0;
+				this.submitForm.is_home_loan=this.teamForm.house.radio=="是"? 1:0;
+				this.submitForm.is_rent_house=this.teamForm.rent.radio=="是"? 1:0;
+				this.submitForm.is_support=this.teamForm.old.isHave=="是"? 1:0;
+				this.submitForm.is_singleton=this.teamForm.old.onlychildRadio=="是"? 1:0;
+				this.submitTip=true;
+
+		      },
+		      joinChild(obj){	 
+				if(obj=='是'){
+					this.teamForm.child.numDisabled = false;
+					this.teamForm.child.selDisabled= false;
+		      	}else if(obj=='否'){
+					this.teamForm.child.numDisabled = true;
+					this.teamForm.child.selDisabled= true;
+					this.submitForm.child=0;
+				}
+		     },
+			 joinContinue(){
+				 this.submitForm.edu_money = this.teamForm.continue.educationRadio=="是" ? 400 : 0;
+				 this.submitForm.skill_money = this.teamForm.continue.professionRadio=="是" ? 3600 : 0;
+				 
+			 },
+			 joinHouse(){
+				if(this.teamForm.house.radio=="是"){
+					this.teamForm.rent.radio="否";
+					this.ruleTip = true;
+				 }
+			 },
+			 joinRent(obj) {
+			 	if(this.teamForm.rent.radio=="是"){
+			 		this.teamForm.house.radio="否";
+					this.ruleTip = true;
+					this.teamForm.rent.rentDisabled = obj=="是" ? false : true;
+			     }
+			 },
+			 joinOld(obj){
+				if(obj=="是"){
+					this.teamForm.old.isHaveDisabled = false;
+					this.teamForm.old.onlyDisabled = false;
+					this.teamForm.old.priceDisabled = false;
+				}else{
+					this.teamForm.old.isHaveDisabled = true;
+					this.teamForm.old.onlyDisabled = true;
+					this.teamForm.old.priceDisabled = true;
+				}
+			 },
+			 checkInput(){
+			 	if(this.teamForm.old.isHave=="是"){
+			 		this.teamForm.old.priceDisabled = false;
+				 	if(this.teamForm.old.onlychildRadio=="是"&&this.teamForm.old.price>2000){
+	                    this.$message('独生子女赡养老人最高不超过2000元/月');
+				 	}else if(this.teamForm.old.onlychildRadio=="否"&&this.teamForm.old.price>1000){
+	                    this.$message('非独生子女赡养老人最高不超过1000元/月');
+				 	}
+				 }else{
+                     this.$message("没有满60岁的老人需要赡养，不满足免税专项扣除条件");
+                     this.teamForm.old.price = 0;
+                     this.teamForm.old.priceDisabled = true;
+				 }
+			 },
+			 monthTip(){
+				 if(this.teamForm.child.num==""||this.teamForm.child.selection==""){
+					this.teamForm.child.month='未选择个数”/“未选择比例';
+				 }else{
+					if(this.teamForm.child.selection=="50%"){
+						this.teamForm.child.month = parseInt(this.teamForm.child.num)*0.5*1000;
+					}else if(this.teamForm.child.selection=="100%"){
+						this.teamForm.child.month = parseInt(this.teamForm.child.num)*1*1000;
+					}
+					this.submitForm.chird_edu_money=this.teamForm.child.month;
+				 }
+			 },
+			 onConfirm(){
+                //数据请求提交
+                this.$http.post('https://jsonplaceholder.typicode.com/posts',this.submitForm,{emulateJSON:true}).then(function(res){
+						console.log(res.body);    
+                },function(res){
+                    console.log(res.status);
+                });
+                this.submitTip = false;
+			 },
+			  openVn() {
+		        const h = this.$createElement;
+		        this.$message({
+		          message: h('p', null, [
+		            h('span', null, '内容可以是 '),
+		            h('i', { style: 'color: teal' }, 'VNode')
+		          ]),
+		          type: 'warning'
+		        });
+		      }
+		    },
+		    mounted(){
+		    	//获取姓名、工号、身份证
+                this.$http.get('https://jsonplaceholder.typicode.com/posts').then(function(res){
+					 console.log(res.body);   // 获取请求的数据 
+					 this.applyForm.num="";//工号
+					 this.applyForm.name="";//姓名
+					 this.applyForm.idCard="";//身份证
+					 this.applyForm.area="";//地区
+					 this.applyForm.date="";//申请时间
+                },function(res){
+                    console.log(res.status);
+                });  
+		    }
+		}
+		var Ctor = Vue.extend(Main);
+		new Ctor().$mount('#app');
+	</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+@import url("index.css");
+	[v-cloak] {
+            display: none;
+        }
+	.top{
+		margin-top:20px;
+	}
+	.left{
+		float:left;
+	}
+	.right{
+		float:right;
+	}
+	.el-form{
+	width: 480px;
+	margin: auto;
+	}
+
+	.box-card{
+	margin-bottom: 10px;
+	}
+	.text {
+	font-size: 14px;
+	}
+	.item {
+	margin-bottom: 18px;
+	}
+	.clearfix:before,
+	.clearfix:after {
+	display: table;
+	content: "";
+	}
+	.clearfix:after {
+	clear: both
+	}
+	.box-card {
+	width: 480px;
+	}
+	.apply .text.item span:nth-child(1){
+	font-weight: bold;
+	width: 80px;
+	display: inline-block;
+	}
+	.apply .text.item sup{
+	color:#f00;
+	}
+	.rule{
+	float:right;
+	}
+	.detail .text.item{
+	border-bottom: 1px solid #ccc;
+	}
+	.detail .el-form-item {
+	     margin-bottom: 0px; 
+	}
+	.ruleTitle{
+	    height: 30px;
+	line-height: 30px;
+	    margin-bottom: 20px;
+	    font-weight: bold;
+	}
+	.numInput input.el-input__inner {
+	    border: 0;
+	    border-bottom: 1px solid #ccc;
+	    width: 50px;
+     }
+     .zufang label.el-form-item__label{
+     	width: 120px !important;
+     }
+     .zufang .el-form-item__content{
+     	margin-left: 120px !important;
+     }
+     .choose{
+     	    text-align: center;
+     }
+	.input{
+		border: 0;
+		margin-left:5px;
+		padding-left:5px;
+		outline: 0;
+		border-bottom:1px solid #ccc;
+	}
+	.num{
+		width:40px;
+		border: 0;
+		margin-left:5px;
+		padding-left:5px;
+		outline: 0;
+		border-bottom:1px solid #ccc;
+	}
+	.el-dialog{
+		width: 80%;
+		margin-top: 5vh !important;
+	}
+	.teamForm .el-form-item__content{
+		text-align: right;
+	}
+	.rent{
+		line-height: 40px;
+		overflow: hidden;
+	}
+	.bottom{
+		margin-bottom:20px;
+	}
+	.tip{
+		color: #ce2828;
+	    font-family: "楷体";
+	    font-size: 14px;
+	    line-height: 20px;
+	    text-align: justify;
+	}
+	.skill{
+		overflow: hidden;
+        margin-top: 15px;
+        margin-bottom: 15px;
+	}
+	.skillLeft{
+		float:left;
+	}
+	.skillLeft span:nth-child(2){
+		font-size: 12px;
+	}
+	.skillRight{
+		float:right;
+	}
+	.lineHeight .el-form-item__label{
+       line-height: 20px;
+	}
+	.applyForm .el-form-item,.submitForm .el-form-item{
+       margin-bottom: 0px;
+	}
+	.close{
+		position: fixed;
+		right: 20px;
+		top: 20px;
+	}
+	@media(max-width: 450px) {
+		.el-form{
+		width: initial;
+		}
+		.el-card{
+		width: initial;
+		}
+	}
